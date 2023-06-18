@@ -4,6 +4,8 @@
             <div class="card-header">
                 <h3 class="card-title">Add room</h3>
             </div>
+
+
             <form method="post">
                 @csrf
                 <div class="card-body">
@@ -31,12 +33,13 @@
                         <label for="description">description</label>
                         <textarea class="form-control" rows="3" name=description id=description placeholder="Enter ..."></textarea>
                     </div>
-                    {{-- add images upload section --}}
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label for="image">Image</label>
-                            <div id="roomImageDrop" class="dropzone"></div>
-                            <input type="hidden" name="image" id="image">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label>Images</label>
+                                <div id="roomImageDrop" class="dropzone"></div>
+                                <input type="hidden" name="image" id="image">
+                            </div>
                         </div>
                     </div>
                     <div class="row">
@@ -66,7 +69,7 @@
                                 <select class="custom-select">
                                     <option>Select Room type</option>
                                     @foreach ($statuses as $key => $status )
-                                        <option value="{{$key}}">{{$status}}</option>
+                                        <option value="{{ $key }}">{{ $status }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -87,26 +90,25 @@
         <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
         <script>
             Dropzone.autoDiscover = false;
-            // The constructor of Dropzone accepts two arguments:
-            //
-            // 1. The selector for the HTML element that you want to add
-            //    Dropzone to, the second
-            // 2. An (optional) object with the configuration
+
             let myDropzone = new Dropzone("#roomImageDrop", {
-                url: "{{ route('room.image.upload') }}",
-                maxFilesize: 3, // MB
-                // acceptedFiles: ".jpeg,.jpg,.png,.gif"
-                acceptedFiles: "image/*",
-                paramName: "image",
+                url: '{{ route('room.image.upload') }}',
+                maxFilesize: 3,
+                acceptedFiles: 'image/*',
+                paramName: 'image',
                 init: function() {
                     this.on('sending', function(file, xhr, formData) {
                         formData.append('_token', '{{ csrf_token() }}');
                     });
-                    this.on("success", function(file, response) {
+                    this.on('success', function(file, response) {
                         console.log(response);
                         if(response.status){
                             $('#image').val(response.image);
+                            notyf.success('Image uploaded successfully')
+                        }else{
+                            notyf.error('Image upload failed')
                         }
+
                     });
                 }
             });

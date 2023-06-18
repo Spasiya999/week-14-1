@@ -6,6 +6,7 @@ use App\Http\Requests\StoreRoomRequest;
 use App\Http\Requests\UpdateRoomRequest;
 use Illuminate\Http\Request;
 use App\Models\Room;
+use Illuminate\Support\Facades\Storage;
 
 class RoomController extends Controller
 {
@@ -34,7 +35,6 @@ class RoomController extends Controller
      */
     public function store(StoreRoomRequest $request)
     {
-        // dump($request->all());
         $data = [
             'number' => $request->room_no,
             'type' => $request->type ?? 'standard',
@@ -67,6 +67,10 @@ class RoomController extends Controller
      */
     public function update(UpdateRoomRequest $request, Room $room)
     {
+
+        if($request->image != $room->image && !empty($room->image)){
+            Storage::disk('public')->delete($room->image);
+        }
         $data = [
             'number' => $request->room_no,
             'type' => $request->type ?? 'standard',
@@ -75,6 +79,7 @@ class RoomController extends Controller
             'occupancy' => $request->occupancy,
             'price_per_hour' => $request->price ?? 1000,
             'status' => $request->status ?? 'unavailable',
+            'image' => $request->image
         ];
 
         $room->update($data);
@@ -92,20 +97,19 @@ class RoomController extends Controller
 
     public function imageUpload(Request $request){
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
-         ]);
-
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:3072', // 2MB
+        ]);
         $file = $request->file('image');
         $path = $file->store('uploads', 'public');
 
         if($path){
             return response()->json([
-                'success' => true,
+                'status' => true,
                 'image' => $path
             ]);
         }else{
             return response()->json([
-                'success' => false,
+                'status' => false,
                 'message' => 'Image upload failed'
             ]);
         }
