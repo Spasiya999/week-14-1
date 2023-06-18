@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('occupancy');
             $table->decimal('price_per_hour', 10, 2);
             $table->string('status', 10)->default('available');
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }

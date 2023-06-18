@@ -4,8 +4,6 @@
             <div class="card-header">
                 <h3 class="card-title">Add room</h3>
             </div>
-
-
             <form method="post">
                 @csrf
                 <div class="card-body">
@@ -85,7 +83,7 @@
     @push('css')
         <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
     @endpush
-    @push('script')
+    @push('scripts')
         <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
         <script>
             Dropzone.autoDiscover = false;
@@ -95,7 +93,22 @@
             //    Dropzone to, the second
             // 2. An (optional) object with the configuration
             let myDropzone = new Dropzone("#roomImageDrop", {
-                url: "/file/post"
+                url: "{{ route('room.image.upload') }}",
+                maxFilesize: 3, // MB
+                // acceptedFiles: ".jpeg,.jpg,.png,.gif"
+                acceptedFiles: "image/*",
+                paramName: "image",
+                init: function() {
+                    this.on('sending', function(file, xhr, formData) {
+                        formData.append('_token', '{{ csrf_token() }}');
+                    });
+                    this.on("success", function(file, response) {
+                        console.log(response);
+                        if(response.status){
+                            $('#image').val(response.image);
+                        }
+                    });
+                }
             });
         </script>
     @endpush
