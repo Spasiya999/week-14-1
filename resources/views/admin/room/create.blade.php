@@ -22,7 +22,7 @@
                                 <label>Room type</label>
                                 <select name="status" id="status" class="custom-select">
                                     <option>Select Room type</option>
-                                    @foreach ($roomTypes as $key => $type)
+                                    @foreach ($types as $key => $type)
                                         <option value="{{ $key }}">{{ $type }}</option>
                                     @endforeach
                                 </select>
@@ -32,6 +32,14 @@
                     <div class="form-group">
                         <label for="description">description</label>
                         <textarea class="form-control" rows="3" name=description id=description placeholder="Enter ..."></textarea>
+                    </div>
+                    {{-- add images upload section --}}
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="image">Image</label>
+                            <div id="roomImageDrop" class="dropzone"></div>
+                            <input type="hidden" name="image" id="image">
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-6">
@@ -74,4 +82,21 @@
             </form>
         </div>
     @endsection
+    @push('css')
+        <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+    @endpush
+    @push('script')
+        <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+        <script>
+            Dropzone.autoDiscover = false;
+            // The constructor of Dropzone accepts two arguments:
+            //
+            // 1. The selector for the HTML element that you want to add
+            //    Dropzone to, the second
+            // 2. An (optional) object with the configuration
+            let myDropzone = new Dropzone("#roomImageDrop", {
+                url: "/file/post"
+            });
+        </script>
+    @endpush
 </x-app-layout>
