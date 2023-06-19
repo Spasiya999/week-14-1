@@ -41,7 +41,7 @@ class RoomController extends Controller
             'description' => $request->description,
             'beds' => $request->beds,
             'occupancy' => $request->occupancy,
-            'price_per_hour' => $request->price ?? 1000,
+            'price_per_hour' => $request->price,
             'status' => $request->status ?? 'unavailable',
             'image' => $request->image
         ];
@@ -77,7 +77,7 @@ class RoomController extends Controller
             'description' => $request->description,
             'beds' => $request->beds,
             'occupancy' => $request->occupancy,
-            'price_per_hour' => $request->price ?? 1000,
+            'price_per_hour' => $request->price,
             'status' => $request->status ?? 'unavailable',
             'image' => $request->image
         ];
